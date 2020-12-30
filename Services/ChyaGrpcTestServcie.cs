@@ -19,6 +19,12 @@ namespace ChyaGrpc
          _logger = logger;
       }
 
+      /// <summary>
+      /// Get echo of input, unary call
+      /// </summary>
+      /// <param name="request"></param>
+      /// <param name="context"></param>
+      /// <returns></returns>
       public override Task<EchoOutput> GetEcho(EchoInput request, ServerCallContext context)
       {
          var output = new StringBuilder();
@@ -34,6 +40,12 @@ namespace ChyaGrpc
          return Task.FromResult(returnVal);
       }
 
+      /// <summary>
+      /// Get datetime with google protobuf timestamp
+      /// </summary>
+      /// <param name="request"></param>
+      /// <param name="context"></param>
+      /// <returns></returns>
       public override Task<TimeOutput> GetDateTime(Empty request, ServerCallContext context)
       {
 
@@ -45,6 +57,13 @@ namespace ChyaGrpc
          return Task.FromResult(returnVal);
       }
 
+      /// <summary>
+      /// Get echo returned as stream, server streaming call
+      /// </summary>
+      /// <param name="request"></param>
+      /// <param name="responseStream"></param>
+      /// <param name="context"></param>
+      /// <returns></returns>
       public override async Task GetEchoStream(EchoInput request, IServerStreamWriter<EchoOutput> responseStream, ServerCallContext context)
       {
          for (int i = 0; i < 3; i++)
@@ -59,8 +78,31 @@ namespace ChyaGrpc
 
             await responseStream.WriteAsync(returnVal);
 
-            Thread.Sleep(5000);
+            //Sleep 3s
+            Thread.Sleep(3000);
          }
+      }
+
+      /// <summary>
+      /// Get input as stream, client streaming call
+      /// </summary>
+      /// <param name="requestStream"></param>
+      /// <param name="context"></param>
+      /// <returns></returns>
+      public override async Task<EchoOutput> GetInputStream(IAsyncStreamReader<EchoInput> requestStream, ServerCallContext context)
+      {
+         var result = new EchoOutput();
+         var input = new StringBuilder();
+
+         while (await requestStream.MoveNext())
+         {
+            input.AppendLine(requestStream.Current.Input);
+         }
+
+         result.Output = input.ToString();
+         result.TimeStamp = Timestamp.FromDateTime(DateTime.UtcNow);
+
+         return await Task.FromResult(result);
       }
    }
 }
