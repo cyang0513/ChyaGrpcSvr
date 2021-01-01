@@ -104,5 +104,29 @@ namespace ChyaGrpc
 
          return await Task.FromResult(result);
       }
+
+      /// <summary>
+      /// Get input as stream and return as stream
+      /// </summary>
+      /// <param name="requestStream"></param>
+      /// <param name="responseStream"></param>
+      /// <param name="context"></param>
+      /// <returns></returns>
+      public override async Task GetInputStreamAsServerStream(IAsyncStreamReader<EchoInput> requestStream, IServerStreamWriter<EchoOutput> responseStream, ServerCallContext context)
+      {      
+         while (await requestStream.MoveNext())
+         {
+            var returnVal = new EchoOutput()
+            {
+               Output = requestStream.Current.Input.ToString(),
+               TimeStamp = Timestamp.FromDateTime(DateTime.UtcNow)
+            };
+
+            await responseStream.WriteAsync(returnVal);
+
+            //Sleep 3s
+            Thread.Sleep(3000);
+         }
+      }
    }
 }
