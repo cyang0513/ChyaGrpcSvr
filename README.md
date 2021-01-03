@@ -9,4 +9,4 @@ It contains demo of different calling ways:
 3. Client streaming call
 4. Clien/Server stream call
 
-And also how to use deadline and cancellation token in the async call.
+Also how to use Empty and Timestamp from google.protobuf
