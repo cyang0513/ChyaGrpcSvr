@@ -1,5 +1,8 @@
 # ChyaGrpc
-Grpc example with C# .NET5
+
+For CSG internal trainning and demo purpose only.
+
+Grpc example with C# .NET5. 
 
 This is a demo of using GRPC as server in .NET 5 with C#. 
 
