@@ -128,5 +128,13 @@ namespace ChyaGrpc
             Thread.Sleep(3000);
          }
       }
+
+      public override Task<GeneralOutput> GetSysInfo(Empty request, ServerCallContext context)
+      {
+         var is64 = Environment.Is64BitOperatingSystem ? "X64" : "X86";
+         return Task.FromResult<GeneralOutput>(new GeneralOutput() { 
+            Output = $"{Environment.Version} - {Environment.OSVersion} - {is64}"
+         });
+      }
    }
 }

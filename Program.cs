@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Azure.Security.KeyVault.Certificates;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 
 namespace ChyaGrpc
 {
@@ -16,12 +18,12 @@ namespace ChyaGrpc
 
       public static void Main(string[] args)
       {
-         //m_Config = new ConfigurationBuilder()
-         //            .SetBasePath(Directory.GetCurrentDirectory())
-         //            .AddJsonFile("appsettings.json", optional: true)
-         //            .AddCommandLine(args)
-         //            .Build();
-
+         m_Config = new ConfigurationBuilder()
+                     .SetBasePath(Directory.GetCurrentDirectory())
+                     .AddJsonFile("appsettings.json", optional: true)
+                     .AddCommandLine(args)
+                     .Build();
+         
          CreateHostBuilder(args).Build().Run();
       }
 
@@ -29,7 +31,7 @@ namespace ChyaGrpc
          Host.CreateDefaultBuilder(args)
              .ConfigureWebHostDefaults(webBuilder =>
                                        {
-                                          webBuilder.UseStartup<Startup>();
+                                          webBuilder.UseStartup<Startup>().ConfigureKestrel(ConfigKestrel);
                                        });
 
       //public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -41,14 +43,12 @@ namespace ChyaGrpc
 
       private static void ConfigKestrel(KestrelServerOptions kestrelOpt)
       {
-         //kestrelOpt.ListenAnyIP(5001, ConfigureListen);
+         kestrelOpt.ListenAnyIP(5001, ConfigureListen);
       }
 
       static void ConfigureListen(ListenOptions listenOpt)
       {
-         //var sslPath = m_Config.GetValue<string>("Kestrel:Certificates:Default:Path");
-         //var sslPwd = m_Config.GetValue<string>("Kestrel:Certificates:Default:Password");
-         //listenOpt.UseHttps(sslPath, sslPwd);
+         listenOpt.UseHttps("chyagrpc.pfx","chyagrpc");
       }
    }
 }
