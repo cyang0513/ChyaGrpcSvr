@@ -27,6 +27,8 @@ namespace ChyaGrpc
       /// <returns></returns>
       public override Task<EchoOutput> GetEcho(EchoInput request, ServerCallContext context)
       {
+         _logger.LogTrace($"{context.Host} {context.Method}");
+
          var output = new StringBuilder();
          output.AppendLine("Your input is: " + request.Input);
          output.AppendLine("The server is: " + Environment.MachineName);
@@ -48,6 +50,7 @@ namespace ChyaGrpc
       /// <returns></returns>
       public override Task<TimeOutput> GetDateTime(Empty request, ServerCallContext context)
       {
+         _logger.LogTrace($"{context.Host} {context.Method}");
 
          var returnVal = new TimeOutput()
          {
@@ -66,6 +69,8 @@ namespace ChyaGrpc
       /// <returns></returns>
       public override async Task GetEchoStream(EchoInput request, IServerStreamWriter<EchoOutput> responseStream, ServerCallContext context)
       {
+         _logger.LogTrace($"{context.Host} {context.Method}");
+
          for (int i = 0; i < 3; i++)
          {
             var returnVal = new EchoOutput()
@@ -91,6 +96,8 @@ namespace ChyaGrpc
       /// <returns></returns>
       public override async Task<EchoOutput> GetInputStream(IAsyncStreamReader<EchoInput> requestStream, ServerCallContext context)
       {
+         _logger.LogTrace($"{context.Host} {context.Method}");
+
          var result = new EchoOutput();
          var input = new StringBuilder();
 
@@ -113,7 +120,9 @@ namespace ChyaGrpc
       /// <param name="context"></param>
       /// <returns></returns>
       public override async Task GetInputStreamAsServerStream(IAsyncStreamReader<EchoInput> requestStream, IServerStreamWriter<EchoOutput> responseStream, ServerCallContext context)
-      {      
+      {
+         _logger.LogTrace($"{context.Host} {context.Method}");
+
          while (await requestStream.MoveNext())
          {
             var returnVal = new EchoOutput()
@@ -131,6 +140,8 @@ namespace ChyaGrpc
 
       public override Task<GeneralOutput> GetSysInfo(Empty request, ServerCallContext context)
       {
+         _logger.LogTrace($"{context.Host} {context.Method}");
+
          var is64 = Environment.Is64BitOperatingSystem ? "X64" : "X86";
          return Task.FromResult<GeneralOutput>(new GeneralOutput() { 
             Output = $"{Environment.Version} - {Environment.OSVersion} - {is64}"
